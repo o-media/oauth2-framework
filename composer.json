@@ -1,0 +1,12 @@
+{
+    "name": "o-media/oauth2-framework",
+    "description": "RFC6739 PHP OAuth2 framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Sergeychik",
+            "email": "alexander.sergeychik@gmail.com"
+        }
+    ],
+    "require": {}
+}
