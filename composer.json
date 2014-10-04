@@ -1,12 +1,21 @@
 {
-    "name": "o-media/oauth2-framework",
-    "description": "RFC6739 PHP OAuth2 framework",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Alexander Sergeychik",
-            "email": "alexander.sergeychik@gmail.com"
-        }
-    ],
-    "require": {}
+	"name" : "o-media/oauth2-framework",
+	"description" : "RFC6739 PHP OAuth2 framework",
+	"version" : "0.1.0-dev",
+	"authors" : [{
+			"name" : "Alexander Sergeychik",
+			"email" : "alexander.sergeychik@gmail.com"
+		}
+	],
+	"license" : "MIT",
+	"homepage" : "https://github.com/o-media/oauth2-framework",
+	"type" : "library",
+	"autoload" : {
+		"psr-0" : {
+			"OMedia\\OAuth2Framework" : "src"
+		}
+	},
+	"keywords" : [
+		"oauth2"
+	]
 }
