@@ -1,5 +1,5 @@
 <?php
-namespace Like2biz\Bundle\GoogleBundle\OAuth2\Request;
+namespace OMedia\OAuth2Framework\Request;
 
 /**
  * Interface for state-aware requests.
@@ -9,7 +9,12 @@ namespace Like2biz\Bundle\GoogleBundle\OAuth2\Request;
  */
 interface StateAwareRequestInterface {
 	
-	const PARAMETER_STATE = 'state';
+	/**
+	 * Returns state value
+	 * 
+	 * @return string
+	 */
+	public function getState();
 	
 	/**
 	 * Sets an opaque value used by the client to maintain

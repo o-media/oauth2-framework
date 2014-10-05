@@ -1,12 +1,12 @@
 <?php
-namespace Like2biz\Bundle\GoogleBundle\OAuth2\Authentication;
+namespace OMedia\OAuth2Framework\Token;
 
 /**
  * Access/refresh token interface
  *
  * @author Alexander Sergeychik
  */
-interface TokenInterface {
+interface AccessTokenInterface {
 
 	/**
 	 * Returns access token

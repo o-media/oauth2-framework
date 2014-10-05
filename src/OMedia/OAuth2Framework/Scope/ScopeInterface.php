@@ -1,6 +1,11 @@
 <?php
-namespace Like2biz\Bundle\GoogleBundle\OAuth2\Scope;
+namespace OMedia\OAuth2Framework\Scope;
 
+/**
+ * RFC6749 OAuth2 scope interface
+ * 
+ * @author Alexander Sergeychik
+ */
 interface ScopeInterface {
 	
 	/**

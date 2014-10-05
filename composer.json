@@ -17,5 +17,8 @@
 	},
 	"keywords" : [
 		"oauth2"
-	]
+	],
+	"require" : {
+		"zendframework/zend-uri" : "2.3.3@stable"
+	}
 }
