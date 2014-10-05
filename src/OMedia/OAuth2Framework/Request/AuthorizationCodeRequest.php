@@ -1,36 +1,38 @@
 <?php
-namespace OMedia\OAuth2Framework\Request\Authorization;
+namespace OMedia\OAuth2Framework\Request;
 
+use OMedia\OAuth2Framework\Role\ClientInterface;
 use OMedia\OAuth2Framework\Scope\ScopeInterface;
-use OMedia\OAuth2Framework\Request\StateAwareRequestInterface;
-use OMedia\OAuth2Framework\IO\HttpRequestInterface;
 use OMedia\OAuth2Framework\Endpoint\RedirectionEndpointInterface;
-use OMedia\OAuth2Framework\Endpoint\AuthorizationEndpointInterface;
 
 /**
- * Authorization code grant request.
+ * RFC6749 Authorization code grant request.
  *
- * Implements "code" grant_type request
+ * The client initiates the flow by directing the resource owner's
+ * user-agent to the authorization endpoint. The client includes
+ * its client identifier, requested scope, local state, and a
+ * redirection URI to which the authorization server will send the
+ * user-agent back once access is granted (or denied).
  *
  * @see http://tools.ietf.org/html/rfc6749#section-4.1
  * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
  * @author Alexander Sergeychik
  */
-class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements StateAwareRequestInterface {
+class AuthorizationCodeRequest implements RequestInterface, StateAwareRequestInterface {
 
 	/**
 	 * Client identifier
 	 *
-	 * @var string
+	 * @var ClientInterface
 	 */
-	protected $clientId;
+	protected $client;
 
 	/**
 	 * Redirection endpoint
 	 *
 	 * @var RedirectionEndpointInterface
 	 */
-	protected $redirectUri;
+	protected $redirectEndpoint;
 
 	/**
 	 * Scope
@@ -47,45 +49,49 @@ class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements S
 	protected $state;
 
 	/**
-	 * Constructs authorization code grant request
+	 * Constructs authorization code request
 	 *
-	 * @param AuthorizationEndpointInterface $autorizationUri
-	 * @param string $clientId        	
-	 * @param RedirectionEndpointInterface $redirectUri        	
+	 * @param ClientInterface $client        	
+	 * @param RedirectionEndpointInterface $redirectionEndpoint        	
 	 * @param ScopeInterface $scope        	
 	 * @param string $state        	
 	 */
-	public function __construct(AuthorizationEndpointInterface $autorizationUri, $clientId, RedirectionEndpointInterface $redirectUri = null, ScopeInterface $scope, $state = null) {
+	public function __construct(ClientInterface $client, RedirectionEndpointInterface $redirectionEndpoint = null, ScopeInterface $scope, $state = null) {
 		// requred parameters
-		$this->setAuthorizationEndpoint($autorizationUri);
-		$this->setResponseType(self::RESPONSE_TYPE_CODE);
-		$this->setClientId($clientId);
+		$this->setClient($client);
 		
 		// optional parameters
-		if ($redirectUri !== null) $this->setRedirectUri($redirectUri);
+		if ($redirectionEndpoint !== null) $this->setRedirectionEndpoint($redirectionEndpoint);
 		if ($scope !== null) $this->setScope($scope);
 		if ($state !== null) $this->setState($state);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getResponseType() {
+		return self::RESPONSE_TYPE_CODE;
+	}
+	
 	/**
 	 * Returns client identifier
 	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
 	 * @return string
 	 */
-	public function getClientId() {
-		return $this->clientId;
+	public function getClient() {
+		return $this->client;
 	}
 
 	/**
 	 * Sets the client identifier
 	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
-	 * @param string $clientId        	
+	 * @param ClientInterface $client        	
 	 * @return AuthorizationCodeRequest
 	 */
-	public function setClientId($clientId) {
-		$this->clientId = $clientId;
+	public function setClient(ClientInterface $client) {
+		$this->client = $client;
 		return $this;
 	}
 
@@ -96,8 +102,8 @@ class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements S
 	 * @see http://tools.ietf.org/html/rfc6749#section-3.1.2
 	 * @return RedirectionEndpointInterface
 	 */
-	public function getRedirectUri() {
-		return $this->redirectUri;
+	public function getRedirectionEndpoint() {
+		return $this->redirectEndpoint;
 	}
 
 	/**
@@ -105,11 +111,11 @@ class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements S
 	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
 	 * @see http://tools.ietf.org/html/rfc6749#section-3.1.2
-	 * @param RedirectionEndpointInterface $redirectUri        	
+	 * @param RedirectionEndpointInterface $redirectionEndpoint        	
 	 * @return AuthorizationCodeRequest
 	 */
-	public function setRedirectUri(RedirectionEndpointInterface $redirectUri) {
-		$this->redirectUri = $redirectUri;
+	public function setRedirectionEndpoint(RedirectionEndpointInterface $redirectionEndpoint) {
+		$this->redirectEndpoint = $redirectionEndpoint;
 		return $this;
 	}
 
@@ -138,7 +144,7 @@ class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements S
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @see http://tools.ietf.org/html/rfc6749#section-4.1.1
 	 */
 	public function getState() {
@@ -154,26 +160,6 @@ class AuthorizationCodeRequest extends AbstractAuthorizationRequest implements S
 	public function setState($state) {
 		$this->state = $state;
 		return $this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function apply(HttpRequestInterface $request) {
-		$request = parent::apply($request);
-		
-		if (($redirectUri = $this->getRedirectUri()) !== null) {
-			$request->setQueryParameter(self::PARAMETER_REDIRECT_URI, $redirectUri->getUri());
-		}
-		
-		if (($scope = $this->getScope()) !== null) {
-			$request->setQueryParameter(self::PARAMETER_SCOPE, $scope->getScope());
-		}
-		
-		if (($state = $this->getState()) !== null) {
-			$request->setQueryParameter(self::PARAMETER_STATE, $state);
-		}
-		return $request;
 	}
 
 }

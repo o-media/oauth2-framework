@@ -1,18 +1,30 @@
 <?php
-namespace OMedia\OAuth2Framework\Request\Token;
+namespace OMedia\OAuth2Framework\Grant;
 
-use OMedia\OAuth2Framework\Endpoint\TokenEndpointInterface;
 use OMedia\OAuth2Framework\Scope\ScopeInterface;
-use OMedia\OAuth2Framework\IO\HttpRequestInterface;
 
 /**
- * The resource owner password credentials grant type request
+ * RFC6749 Resource owner password credentials grant.
+ *
+ * The resource owner password credentials grant type is suitable in
+ * cases where the resource owner has a trust relationship with the
+ * client, such as the device operating system or a highly privileged
+ * application. The authorization server should take special care when
+ * enabling this grant type and only allow it when other flows are not
+ * viable.
+ *
+ * This grant type is suitable for clients capable of obtaining the
+ * resource owner's credentials (username and password, typically using
+ * an interactive form). It is also used to migrate existing clients
+ * using direct authentication schemes such as HTTP Basic or Digest
+ * authentication to OAuth by converting the stored credentials to an
+ * access token.
  *
  * @see http://tools.ietf.org/html/rfc6749#section-4.3
  * @see http://tools.ietf.org/html/rfc6749#section-4.3.2
  * @author Alexander Sergeychik
  */
-class PasswordCredentialsRequest extends AbstractTokenRequest {
+class PasswordGrant implements GrantInterface {
 
 	/**
 	 * Username credential
@@ -38,14 +50,11 @@ class PasswordCredentialsRequest extends AbstractTokenRequest {
 	/**
 	 * Constructs password grant request
 	 *
-	 * @param TokenEndpointInterface $tokenEndpoint        	
 	 * @param string $username        	
 	 * @param string $password        	
 	 * @param ScopeInterface $scope        	
 	 */
-	public function __construct(TokenEndpointInterface $tokenEndpoint, $username, $password, ScopeInterface $scope = null) {
-		$this->setTokenEndpoint($tokenEndpoint);
-		$this->setGrantType(self::GRANT_TYPE_PASSWORD);
+	public function __construct($username, $password, ScopeInterface $scope = null) {
 		
 		$this->setUsername($username);
 		$this->setPassword($password);
@@ -53,6 +62,13 @@ class PasswordCredentialsRequest extends AbstractTokenRequest {
 		if ($scope !== null) {
 			$this->setScope($scope);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getType() {
+		return self::GRANT_TYPE_PASSWORD;
 	}
 
 	/**
@@ -123,17 +139,4 @@ class PasswordCredentialsRequest extends AbstractTokenRequest {
 		return $this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function apply(HttpRequestInterface $request) {
-		$request = parent::apply($request);
-		
-		// @todo request apply
-		
-		return $request;
-	}
-
-	
-	
 }

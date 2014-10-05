@@ -1,18 +1,16 @@
 <?php
-namespace OMedia\OAuth2Framework\Request\Token;
+namespace OMedia\OAuth2Framework\Grant;
 
-use OMedia\OAuth2Framework\Endpoint\TokenEndpointInterface;
 use OMedia\OAuth2Framework\Token\AccessTokenInterface;
 use OMedia\OAuth2Framework\Scope\ScopeInterface;
-use OMedia\OAuth2Framework\IO\HttpRequestInterface;
 
 /**
- * Refresh token request
+ * Refresh token grant
  * 
  * @see http://tools.ietf.org/html/rfc6749#section-6
  * @author Alexander Sergeychik
  */
-class RefreshTokenRequest extends AccessTokenRequest {
+class RefreshTokenGrant implements GrantInterface {
 	
 	/**
 	 * Scope instance
@@ -31,19 +29,22 @@ class RefreshTokenRequest extends AccessTokenRequest {
 	/**
 	 * Constructs request using previously generated access token instance and scopes
 	 * 
-	 * @param TokenEndpointInterface $tokenEndpoint
-	 * @param AccessTokenInterface $accessToken
+	 * @param AccessTokenInterface $accessToken - previously obtained access token
 	 * @param ScopeInterface $scope
 	 */
-	public function __construct(TokenEndpointInterface $tokenEndpoint, AccessTokenInterface $accessToken, ScopeInterface $scope = null) {
-		$this->setTokenEndpoint($tokenEndpoint);
-		$this->setGrantType(self::GRANT_TYPE_CLIENT_CREDENTIALS);
-	
+	public function __construct(AccessTokenInterface $accessToken, ScopeInterface $scope = null) {
 		$this->setAccessToken($accessToken);
 		
 		if ($scope !== null) {
 			$this->setScope($scope);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getType() {
+		return self::GRANT_TYPE_REFRESH_TOKEN;
 	}
 	
 	/**
@@ -59,7 +60,7 @@ class RefreshTokenRequest extends AccessTokenRequest {
 	 * Sets access token instance with refresh token stored in it
 	 * 
 	 * @param AccessTokenInterface $accessToken
-	 * @return RefreshTokenRequest
+	 * @return RefreshTokenGrant
 	 */
 	public function setAccessToken(AccessTokenInterface $accessToken) {
 		$this->accessToken = $accessToken;
@@ -83,23 +84,11 @@ class RefreshTokenRequest extends AccessTokenRequest {
 	 * @see http://tools.ietf.org/html/rfc6749#section-6
 	 * @see http://tools.ietf.org/html/rfc6749#section-3.3
 	 * @param ScopeInterface $scope
-	 * @return RefreshTokenRequest
+	 * @return RefreshTokenGrant
 	 */
 	public function setScope(ScopeInterface $scope) {
 		$this->scope = $scope;
 		return $this;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public function apply(HttpRequestInterface $request) {
-		$request = parent::apply($request);
-		
-		// @todo request apply
-		
-		return $request;
-	}
-
 	
 }
