@@ -2,7 +2,7 @@
 namespace OMedia\OAuth2Framework\Endpoint;
 
 /**
- * RFC6749 Redirection endpoint implementation
+ * RFC6749 Token endpoint implementation
  *
  * @author Alexander Sergeychik
  */
