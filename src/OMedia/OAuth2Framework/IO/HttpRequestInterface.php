@@ -32,4 +32,13 @@ interface HttpRequestInterface {
 	
 	public function setMethod($method);
 	
+	public function setBasicHttpAuth($username, $password);
+	
+	/**
+	 * Returns Http Basic auth username and password
+	 * 
+	 * @return array|null - array with 2 elements [username, password]
+	 */
+	public function getBasicHttpAuth();
+	
 }

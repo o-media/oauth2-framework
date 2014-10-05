@@ -2,12 +2,14 @@
 namespace OMedia\OAuth2Framework\Client;
 
 use OMedia\OAuth2Framework\IO\HttpRequestInterface;
+use OMedia\OAuth2Framework\Client\Authentication\AuthenticationInterface;
 
 /**
  * Client interface
  * 
  * @see http://tools.ietf.org/html/rfc6749#section-2.1
  * @see http://tools.ietf.org/html/rfc6749#section-2.2
+ * @see http://tools.ietf.org/html/rfc6749#section-2.3
  * @author Alexander Sergeychik
  */
 interface ClientInterface {
@@ -18,14 +20,14 @@ interface ClientInterface {
 	 * @see http://tools.ietf.org/html/rfc6749#section-2.2
 	 * @return string
 	 */
-	public function getClientId();
+	public function getId();
 	
 	/**
-	 * Signs request by client credentials
+	 * For confenetial clients authentication credentials could be set
 	 * 
-	 * @param HttpRequestInterface $request
-	 * @return HttpRequestInterface
+	 * @see http://tools.ietf.org/html/rfc6749#section-2.3
+	 * @return AuthenticationInterface
 	 */
-	public function sign(HttpRequestInterface $request);
+	public function getAuthentication();
 	
 }
