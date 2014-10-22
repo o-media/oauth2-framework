@@ -16,4 +16,11 @@ interface ScopeInterface {
 	 */
 	public function getScope();
 	
+	/**
+	 * Returns scope description
+	 * 
+	 * @return string
+	 */	
+	public function getDescription();
+	
 }
